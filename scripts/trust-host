@@ -1,0 +1,5 @@
+#!/bin/sh
+
+mkdir -p ~/.ssh/
+
+printf "HOST $1\n  User git\n  IdentityFile ~/.ssh/id_rsa\n  StrictHostKeyChecking no\n" > ~/.ssh/config
