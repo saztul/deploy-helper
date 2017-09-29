@@ -2,7 +2,7 @@ FROM alpine:3.6
 
 MAINTAINER Lutz Selke <ls@hfci.de>
 
-RUN apk add --update openssh curl
+RUN apk add --update openssh curl docker
 
 ADD scripts/* /usr/local/bin/
 
