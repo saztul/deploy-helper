@@ -1,0 +1,2 @@
+#!/bin/sh
+rsync -avzr --delete --exclude-from=/deploy/.deployignore /deploy/ "${USER}@${SERVER}:${REMOTE_DIR}/"
