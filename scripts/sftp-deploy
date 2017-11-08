@@ -1,5 +1,5 @@
 #!/bin/sh
-EXCLUDE_GLOB=$(sed '/^\s*$/d' /deploy/.deployignore | sed 's/^/--exclude-glob /' | tr "\n" ' ')
+EXCLUDE_GLOB=$(sed '/^\s*$/d' .deployignore | sed 's/^/--exclude-glob /' | tr "\n" ' ')
 LFTP_OPTS="set ftp:charset UTF-8;set net:max-retries 2;set net:reconnect-interval-base 5;set net:reconnect-interval-multiplier 1;set ftp:ssl-allow off;set sftp:auto-confirm yes;"
 
-lftp -u "${USER},${PASSWORD}" -e "${LFTP_OPTS} mirror --no-perms --delete --parallel=10 ${EXCLUDE_GLOB} -R /deploy/ ${REMOTE_DIR};bye" $HOST
+lftp -u "${USER},${PASSWORD}" -e "${LFTP_OPTS} mirror --no-perms --delete --parallel=10 ${EXCLUDE_GLOB} -R ./ ${REMOTE_DIR};bye" $HOST
