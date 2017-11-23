@@ -28,6 +28,12 @@ RUN curl -L https://phar.phpunit.de/phpunit.phar > /usr/local/bin/phpunit && \
     chmod +x /usr/local/bin/phpunit && \
     phpunit --version
 
+# fake docker-compose
+RUN echo "#\!/bin/sh\necho 'docker-compose not available in deploy conatiner'" > /usr/local/bin/docker-compose
+
+# grunt
+RUN npm i -g grunt-cli
+
 ADD scripts/* /usr/local/bin/
 
 RUN mkdir /deploy && \
