@@ -10,12 +10,18 @@ RUN apk add --update \
         nodejs nodejs-npm build-base zlib-dev \
         autoconf automake libtool nasm libpng-dev
 
-# PHP composer support
+# PHP support
 RUN curl https://php.codecasts.rocks/php-alpine.rsa.pub > /etc/apk/keys/php-alpine.rsa.pub && \
     echo "http://php.codecasts.rocks/v3.6/php-7.1" >> /etc/apk/repositories && \
     apk add --update openssl git php7 php7-mbstring php7-openssl php7-phar php7-json php7-zlib && \
     ln -s /usr/bin/php7 /usr/bin/php && \
     php --version
+
+# PHP composer support
+RUN curl -L https://getcomposer.org/installer > composer-setup.php && \
+    php composer-setup.php --filename=composer --install-dir=/usr/local/bin && \
+    rm -f composer-setup.php && \
+    composer --version
 
 # phpunit
 RUN curl -L https://phar.phpunit.de/phpunit.phar > /usr/local/bin/phpunit && \
