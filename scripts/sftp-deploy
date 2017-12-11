@@ -39,7 +39,7 @@ USER="$3"
 PASSWORD="$4"
 IGNORE_FILE="${5:-.deployignore}"
 LFTP_OPTS="set ftp:charset UTF-8;set net:max-retries 2;set net:reconnect-interval-base 5;set net:reconnect-interval-multiplier 1;set ftp:ssl-allow off;set sftp:auto-confirm yes;"
-LFTP_MIRROR_ARGS="${LFTP_MIRROR_ARGS:---only-newer --no-perms --scan-all-first --parallel=10}"
+LFTP_MIRROR_ARGS="--only-newer --no-perms"
 EXCLUDE_GLOB=""
 
 # parsing ignore file
