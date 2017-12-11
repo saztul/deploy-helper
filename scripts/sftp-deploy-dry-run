@@ -1,7 +1,0 @@
-#!/bin/sh
-EXCLUDE_GLOB=$(sed '/^\s*$/d' .deployignore | sed 's/^/--exclude-glob /' | tr "\n" ' ')
-LFTP_OPTS="set ftp:charset UTF-8;set net:max-retries 2;set net:reconnect-interval-base 5;set net:reconnect-interval-multiplier 1;set ftp:ssl-allow off;set sftp:auto-confirm yes;"
-LFTP_MIRROR_ARGS="${LFTP_MIRROR_ARGS:---only-newer --no-perms --parallel=10}"
-lftp -u "${USER},${PASSWORD}" -e "${LFTP_OPTS} mirror --dry-run=/deploy/deploy.log --delete $LFTP_MIRROR_ARGS $EXCLUDE_GLOB -R ./ ${REMOTE_DIR};bye" $HOST
-
-cat /deploy/deploy.log

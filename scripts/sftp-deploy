@@ -1,5 +1,66 @@
-#!/bin/sh
-EXCLUDE_GLOB=$(sed '/^\s*$/d' .deployignore | sed 's/^/--exclude-glob /' | tr "\n" ' ')
+#!/bin/bash
+
+# init dry run opt
+DRY_RUN=false
+
+# parse inputs
+POSITIONAL=()
+while [[ $# -gt 0 ]]
+do
+  key="$1"
+
+  case $key in
+      -d|--dry-run)
+      DRY_RUN=true
+      shift # past argument
+      # shift # past value
+      ;;
+      *)    # unknown option
+      POSITIONAL+=("$1") # save it in an array for later
+      shift # past argument
+      ;;
+  esac
+done
+
+# restore positional parameters
+set -- "${POSITIONAL[@]}"
+
+if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ] || [ -z "$4" ]
+  then
+    echo "USAGE: $0 server remote-dir user password [ ignore-file ] [ --dry-run ]"
+    echo "Arguments inside [ ] are optional "
+    exit 1
+fi
+
+# set named vars
+HOST="$1"
+REMOTE_DIR="$2"
+USER="$3"
+PASSWORD="$4"
+IGNORE_FILE="${5:-.deployignore}"
 LFTP_OPTS="set ftp:charset UTF-8;set net:max-retries 2;set net:reconnect-interval-base 5;set net:reconnect-interval-multiplier 1;set ftp:ssl-allow off;set sftp:auto-confirm yes;"
-LFTP_MIRROR_ARGS="${LFTP_MIRROR_ARGS:---only-newer --no-perms --parallel=10}"
-lftp -u "${USER},${PASSWORD}" -e "${LFTP_OPTS} mirror --verbose --delete $LFTP_MIRROR_ARGS $EXCLUDE_GLOB -R ./ ${REMOTE_DIR};bye" $HOST
+LFTP_MIRROR_ARGS="${LFTP_MIRROR_ARGS:---only-newer --no-perms --scan-all-first --parallel=10}"
+EXCLUDE_GLOB=""
+
+# parsing ignore file
+if [ -f "$IGNORE_FILE" ]; then
+  EXCLUDE_GLOB="--exclude-glob-from='$IGNORE_FILE'"
+fi
+
+# dry run switch
+if [ "$DRY_RUN" = true ]; then
+  LFTP_RUN_OPTS='--dry-run=/deploy/deploy.log'
+else
+  LFTP_RUN_OPTS='--verbose'
+fi
+
+# print cammand without username or password
+echo "lftp -u \$USER,\$PASSWORD -e ${LFTP_OPTS} mirror $LFTP_RUN_OPTS --delete $LFTP_MIRROR_ARGS $EXCLUDE_GLOB -R ./ ${REMOTE_DIR};bye $HOST"
+
+# sync data using lftp
+lftp -u "${USER},${PASSWORD}" -e "${LFTP_OPTS} mirror $LFTP_RUN_OPTS --delete $LFTP_MIRROR_ARGS $EXCLUDE_GLOB -R ./ ${REMOTE_DIR};bye" $HOST
+
+# print dry run log
+if [ "$DRY_RUN" = true ]; then
+  cat /deploy/deploy.log
+fi

@@ -3,7 +3,7 @@ FROM alpine:3.6
 LABEL maintainer="Lutz Selke <ls@hfci.de>"
 
 # basics
-RUN apk add --update openssh curl docker rsync lftp
+RUN apk add --update openssh curl docker rsync lftp bash
 
 # NPM / Webpack support
 RUN apk add --update \
@@ -41,7 +41,6 @@ RUN mkdir /deploy && \
              /usr/local/bin/post-telegram-message \
              /usr/local/bin/trust-host \
              /usr/local/bin/run-deploy \
-             /usr/local/bin/sftp-deploy \
-             /usr/local/bin/sftp-deploy-dry-run
+             /usr/local/bin/sftp-deploy
 
 WORKDIR /deploy
