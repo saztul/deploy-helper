@@ -13,7 +13,7 @@ RUN apk add --update \
 # PHP support
 RUN curl https://php.codecasts.rocks/php-alpine.rsa.pub > /etc/apk/keys/php-alpine.rsa.pub && \
     echo "http://php.codecasts.rocks/v3.6/php-7.1" >> /etc/apk/repositories && \
-    apk add --update openssl git php7 php7-mbstring php7-openssl php7-phar php7-json php7-zlib && \
+    apk add --update openssl git php7 php7-mbstring php7-openssl php7-phar php7-json php7-zlib php7-mysqli php7-ctype php7-xml && \
     ln -s /usr/bin/php7 /usr/bin/php && \
     php --version
 
